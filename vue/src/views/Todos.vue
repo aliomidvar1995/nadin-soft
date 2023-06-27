@@ -71,20 +71,20 @@ const length = ref()
 
 function getResult() {
     axiosInstance.get(`/todos?page=${page.value}`)
-        .then((res) => {
-            console.log(res.data);
-            todos.value = res.data.data
-            length.value = res.data.links.length - 2
-            loading.value = false
-        })
+    .then((res) => {
+        console.log(res.data);
+        todos.value = res.data.data
+        length.value = res.data.links.length - 2
+        loading.value = false
+    })
 }
 
 function deleteTodo(id) {
     loading.value = true
     axiosInstance.delete(`/todos/${id}`)
-        .then((res) => {
-            getResult()
-        })
+    .then((res) => {
+        getResult()
+    })
 }
 
 

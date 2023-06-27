@@ -21,9 +21,10 @@ const message = ref('')
 
 
 const time = ref((new Date()).toLocaleTimeString())
-console.log((new Date(0,0,0,12,0,0)).getHours() > (new Date()).getHours());
+
+
 function setMessage() {
-    if(((new Date(0,0,0,6,0,0)).getHours() < (new Date()).getHours()) && ((new Date()).getHours() < (new Date(0,0,0,12,0,0)).getHours())) {
+    if(((new Date(0,0,0,6,0,0)).getHours() <= (new Date()).getHours()) && ((new Date()).getHours() < (new Date(0,0,0,12,0,0)).getHours())) {
         message.value = 'Good morning'
     }
     else if(((new Date(0,0,0,12,0,0)).getHours() <= (new Date()).getHours()) && ((new Date()).getHours() < (new Date(0,0,0,16,0,0)).getHours())) {
@@ -45,7 +46,6 @@ setInterval(() => {
 
 setMessage()
 
-console.log((new Date(0,0,0,12,0,0)).getHours());
 
 </script>
 
