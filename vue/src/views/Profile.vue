@@ -5,19 +5,15 @@
         </div>
         <div class="profile" v-else>
             <h3>{{ user.name }}</h3>
-            <v-btn @click="toggleTheme">toggle theme</v-btn>
         </div>
     </v-app>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useTheme } from 'vuetify'
-import { useLocale } from 'vuetify'
 import axiosInstance from '../axios'
 import Loading from '../components/Loading.vue'
 
-const theme = useTheme()
 
 const loading = ref(true)
 
@@ -30,17 +26,6 @@ onMounted(() => {
         loading.value = false
     })
 })
-
-
-const toggleTheme = () => {
-    theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
-}
-
-
-const { current } = useLocale()
-
-
-const changeLocale = locale => current.value = locale
 
 </script>
 

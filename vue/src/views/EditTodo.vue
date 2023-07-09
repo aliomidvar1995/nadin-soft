@@ -1,29 +1,30 @@
 <template>
-    <v-sheet class="mx-auto">
+    <div>
         <div class="loading" v-if="loading">
             <Loading />
         </div>
-        <template v-else>
-            <v-form class="todo-form" @submit.prevent="handleEditTodo">
-                <v-text-field v-model="content" :rules="rules" label="Todo"></v-text-field>
-                <v-btn type="submit" style="height: 56px;margin-left: 10px;">Submit</v-btn>
-            </v-form>
-        </template>
-    </v-sheet>
+        <div v-else>
+            <form class="todo-input">
+                <a-input v-model:value="content" placeholder="Todo" />
+                <a-button @click.prevent="handleEditTodo" type="submit">submit</a-button>
+            </form>
+        </div>
+    </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { onMounted, ref } from "vue"
 import Loading from "../components/Loading.vue"
 import axiosInstance from "@/axios";
 import { useRouter } from "vue-router";
+import Todo from "@/classes/Todo"
 
 
-const props = defineProps(["id"])
+const props = defineProps<{id: string}>()
 
-const content = ref('')
+const content = ref<Todo["content"]>('')
 
-const loading = ref(true)
+const loading = ref<boolean>(true)
 
 const router = useRouter()
 
@@ -35,7 +36,9 @@ onMounted(() => {
     })
 })
 
-function handleEditTodo() {
+function handleEditTodo(): void {
+    console.log(123);
+    
     axiosInstance.put(`/todos/${props.id}`, {content: content.value})
     .then((res) => {
         router.push({name: "Todos", params: {page: 1}})

@@ -1,112 +1,135 @@
 <template>
-    <v-sheet class="mx-auto">
-        <v-form class="todo-form" @submit.prevent="handleTodo">
-            <v-text-field v-model="content" :rules="rules" label="Todo"></v-text-field>
-            <v-btn type="submit" style="height: 56px;margin-left: 10px;">Submit</v-btn>
-        </v-form>
-        <v-table>
-            <thead>
-                <tr>
-                    <th class="text-left">
-                        Content
-                    </th>
-                    <th class="text-left">
-                        Actions
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <div class="loading" v-if="loading">
-                    <Loading />
-                </div>
-                <template v-else>
-                    <tr v-for="todo in todos" :key="todo.id">
-                        <td>{{ todo.content }}</td>
-                        <td>
-                            <router-link :to="{ name: 'EditTodo', params: { id: todo.id } }">
-                                <svg style="margin-inline: 5px;cursor: pointer;" xmlns="http://www.w3.org/2000/svg"
-                                    width="20" height="20" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
-                                    <path
-                                        d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                                </svg>
-                            </router-link>
-                            <svg @click="deleteTodo(todo.id)" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                <path style="margin-inline: 5px;cursor: pointer;"
-                                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
-                                <path
-                                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
-                            </svg>
-                        </td>
-                    </tr>
-                </template>
-            </tbody>
-        </v-table>
-        <div class="text-center">
-            <v-pagination @click="getResult" v-model="page" :length="length" prev-icon="mdi-menu-left" next-icon="mdi-menu-right"></v-pagination>
-        </div>
-    </v-sheet>
+  <form class="todo-input" @submit.prevent="handleTodo">
+    <a-input v-model:value="content" placeholder="Todo" />
+    <a-button type="submit">submit</a-button>
+  </form>
+  <div style="display: flex; justify-content: center;" v-if="loading">
+    <Loading />
+  </div>
+  <div v-else>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>todo</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="todo in todos" :key="todo.id">
+          <td>{{ todo.id }}</td>
+          <td>{{ todo.content }}</td>
+          <td>
+            <router-link :to="{ name: 'EditTodo', params: { id: todo.id } }">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+              </svg>
+            </router-link>
+          </td>
+          <td>
+            <svg @click="deleteTodo(todo.id)" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+              <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+            </svg>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="display: flex; justify-content: center; margin-top: 10px;">
+      <a-button @click="getResult(l)" style="margin-inline: 5px;" v-for="l in length" :key="l">{{ l }}</a-button>
+    </div>
+  </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
-import { useRoute } from "vue-router";
-import axiosInstance from "../axios";
-import Loading from "../components/Loading.vue"
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRoute } from 'vue-router'
+import axiosInstance from '../axios'
+import Loading from '../components/Loading.vue'
+import Todo from '../classes/Todo'
 
+const todos = ref<Todo[]>([])
 
-const todos = ref([])
+const loading = ref<boolean>(true)
 
-const loading = ref(true)
-
-const content = ref("")
+const content = ref<string>('')
 
 const route = useRoute()
 
-const page = ref(1)
+// const page = ref(1)
 
-const length = ref()
+const length = ref<number>()
 
-
-
-function getResult() {
-    axiosInstance.get(`/todos?page=${page.value}`)
-    .then((res) => {
-        console.log(res.data);
-        todos.value = res.data.data
-        length.value = res.data.links.length - 2
-        loading.value = false
-    })
+function getResult(page = 1) {
+  axiosInstance.get(`/todos?page=${page}`).then((res) => {
+    console.log(res.data)
+    todos.value = res.data.data
+    length.value = res.data.links.length - 2
+    loading.value = false
+    console.log(`length is` + length.value);
+  })
 }
 
-function deleteTodo(id) {
-    loading.value = true
-    axiosInstance.delete(`/todos/${id}`)
-    .then((res) => {
-        getResult()
-    })
+function deleteTodo(id: number): void {
+  loading.value = true
+  axiosInstance.delete(`/todos/${id}`).then((res) => {
+    getResult()
+  })
 }
-
-
 
 function handleTodo() {
-    axiosInstance.post(`/todos`, { content: content.value })
-        .then((res) => {
-            content.value = ""
-            getResult()
-        })
+  axiosInstance.post(`/todos`, { content: content.value }).then((res) => {
+    content.value = ''
+    getResult()
+  })
 }
 
 getResult()
 </script>
 
 <style>
-.todo-form {
-    display: flex;
+.todo-input {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  margin-bottom: 10px;
 }
 
 .loading {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
-</style>
+
+/* table */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead tr {
+  border: 1px solid white;
+}
+
+th {
+  color: white;
+  background-color: black;
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: rgb(25, 25, 25);
+  color: white;
+}
+
+tr:nth-child(odd) {
+  background-color: rgb(0, 0, 0);
+  color: white;
+}
+
+th,
+td {
+  padding: 10px 20px 10px 10px;
+  font-family: arial;
+}</style>

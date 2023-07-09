@@ -1,48 +1,55 @@
 <template>
     <div class="register-form">
         <div>
-            <v-sheet width="300" class="mx-auto">
-                <v-form @submit.prevent="handleRegister">
-                    <v-text-field v-model="name" :rules="rules" label="Name"></v-text-field>
-                    <span class="error">{{ errors.name }}</span>
-                    <v-text-field v-model="email" :rules="rules" label="Email"></v-text-field>
-                    <span class="error">{{ errors.email }}</span>
-                    <v-text-field type="password" v-model="password" :rules="rules" label="Password"></v-text-field>
-                    <span class="error">{{ errors.password }}</span>
-                    <v-text-field type="password" v-model="password_confirmation" :rules="rules" label="Password Confirmation"></v-text-field>
-                    <span class="error">{{ errors.password_confirmation }}</span>
-                    <v-btn type="submit" block class="mt-2">Register</v-btn>
-                </v-form>
-            </v-sheet>
-        </div>
-        <div class="login">
-            <span>Already registered? &nbsp;</span>
-            <router-link class="login-link" :to="{name: 'Login'}"> login</router-link>
+            <form @submit.prevent="handleRegister">
+                <a-form-item name="name">
+                    <a-input v-model:value="name" placeholder="Name" />
+                </a-form-item>
+                <span class="error">{{ errors.name }}</span>
+                <a-form-item name="email">
+                    <a-input v-model:value="email" placeholder="Email" />
+                </a-form-item>
+                <span class="error">{{ errors.email }}</span>
+                <a-form-item name="password">
+                    <a-input-password v-model:value="password" placeholder="Password" />
+                </a-form-item>
+                <span class="error">{{ errors.password }}</span>
+                <a-form-item name="password_confirmation">
+                    <a-input-password v-model:value="password_confirmation" placeholder="Password Confirmation" />
+                </a-form-item>
+                <span class="error">{{ errors.password_confirmation }}</span>
+                <div class="register-btn">
+                    <a-button type="primary" html-type="submit">Register</a-button>
+                </div>
+            </form>
         </div>
     </div>
 </template>
 
-<script setup>
-import { ref } from 'vue';
+<script setup lang="ts">
+import { reactive, ref } from 'vue';
 import axiosInstance from '../axios'
 import { useRouter } from 'vue-router';
+import User from '../classes/User';
 
-const name = ref('')
-const email = ref('')
-const password = ref('')
-const password_confirmation = ref('')
+
+
+const name = ref<User['name']>('')
+const email = ref<User['email']>('')
+const password = ref<User['password']>('')
+const password_confirmation = ref<User['password_confirmation']>('')
 
 const router = useRouter()
 
 const errors = ref({
-    name: '',
-    email: '',
-    password: '',
-    password_confirmation: ''
+    name: '' as string,
+    email: '' as string,
+    password: '' as string,
+    password_confirmation: '' as string
 })
 
 
-function handleRegister() {
+function handleRegister(): void {
     errors.value.name = ''
     errors.value.email = ''
     errors.value.password = ''
@@ -70,18 +77,13 @@ function handleRegister() {
 <style>
 .register-form {
     margin-top: 100px;
-}
-.login-link {
-    text-decoration: none;
-    color: black;
-}
-.login {
-    margin-top: 10px;
-    text-decoration: none;
-    display: flex;
-    justify-content: center;
+    width: 60%;
+    margin-inline: auto;
 }
 .error {
     color: #cc0000;
+}
+.register-btn {
+    margin-inline: auto;
 }
 </style>

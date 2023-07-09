@@ -1,30 +1,31 @@
 <template>
     <div class="login-form">
         <div>
-            <v-sheet width="300" class="mx-auto">
-                <v-form @submit.prevent="handleLogin">
-                    <v-text-field v-model="email" :rules="rules" label="Email"></v-text-field>
-                    <span class="error">{{ errors.email }}</span>
-                    <v-text-field type="password" v-model="password" :rules="rules" label="Password"></v-text-field>
-                    <span class="error">{{ errors.password }}</span>
-                    <v-btn type="submit" block class="mt-2">Login</v-btn>
-                </v-form>
-            </v-sheet>
-        </div>
-        <div class="register">
-            <span>Not registered yet? &nbsp;</span>
-            <router-link class="register-link" :to="{name: 'Register'}">register</router-link>
+            <a-form @submit.prevent="handleLogin">
+                <a-form-item name="email">
+                    <a-input v-model:value="email" placeholder="Email" />
+                </a-form-item>
+                <span class="error">{{ errors.email }}</span>
+                <a-form-item name="password">
+                    <a-input-password v-model:value="password" placeholder="Password" />
+                </a-form-item>
+                <span class="error">{{ errors.password }}</span>
+                <div class="register-btn">
+                    <a-button type="primary" html-type="submit">Login</a-button>
+                </div>
+            </a-form>
         </div>
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import axiosInstance from '../axios';
+import User from '@/classes/User'
 
-const email = ref('')
-const password = ref('')
+const email = ref<User['email']>('')
+const password = ref<User['password']>('')
 
 const errors = ref({
     email: '',
@@ -56,6 +57,13 @@ function handleLogin() {
 <style>
 .login-form {
     margin-top: 100px;
+    width: 60%;
+    margin-inline: auto;
+}
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 .register-link {
     text-decoration: none;
@@ -69,5 +77,8 @@ function handleLogin() {
 }
 .error {
     color: #cc0000;
+}
+.login-btn {
+    margin-inline: auto;
 }
 </style>
